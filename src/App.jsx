@@ -1,19 +1,21 @@
-import { Button, Heading, Flex } from "@aws-amplify/ui-react";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { Amplify } from "aws-amplify";
-import "@aws-amplify/ui-react/styles.css";
-import outputs from "../amplify_outputs.json";
+import { useState } from "react";
 
-Amplify.configure(outputs);
+function App() {
+  const [message, setMessage] = useState("");
 
-export default function App() {
-  const { signOut, user } = useAuthenticator();
+  const callAPI = async () => {
+    const response = await fetch("https://sucqvdgc0c.execute-api.us-east-2.amazonaws.com/default/HelloWorldFunction");
+    const data = await response.json();
+    setMessage(data.body);
+  };
 
   return (
-    <Flex direction="column" alignItems="center">
-      <Heading level={1}>My Profile</Heading>
-      <Heading level={3}>{user?.signInDetails?.loginId}</Heading>
-      <Button onClick={signOut}>Sign Out</Button>
-    </Flex>
+    <div>
+      <h1>Serverless Web App</h1>
+      <button onClick={callAPI}>Call Lambda Function</button>
+      <p>{message}</p>
+    </div>
   );
 }
+
+export default App;
